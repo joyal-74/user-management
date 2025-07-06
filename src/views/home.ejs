@@ -1,0 +1,399 @@
+<head>
+    <title>TechLift Dashboard</title>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-primary: #0d0d0d;
+                --color-secondary: #121212;
+                --color-accent: #1e1e1e;
+                --color-text: #e0e0e0;
+                --color-text-secondary: #a0a0a0;
+                --color-border: #2a2a2a;
+                --color-button: #3a3a3a;
+                --color-button-hover: #4a4a4a;
+                --color-success: #10b981;
+                --color-warning: #f59e0b;
+                --color-info: #3b82f6;
+                --color-danger: #ef4444;
+            }
+        }
+
+        @layer components {
+            .bg-primary { background-color: var(--color-primary); }
+            .bg-secondary { background-color: var(--color-secondary); }
+            .bg-accent { background-color: var(--color-accent); }
+            .text-primary { color: var(--color-text); }
+            .text-secondary { color: var(--color-text-secondary); }
+            .border-primary { border-color: var(--color-border); }
+            .button-primary { background-color: var(--color-button); color: var(--color-text); }
+            .button-primary:hover { background-color: var(--color-button-hover); }
+            .text-success { color: var(--color-success); }
+            .text-warning { color: var(--color-warning); }
+            .text-info { color: var(--color-info); }
+            .text-danger { color: var(--color-danger); }
+            
+            /* Dropdown styles */
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                right: 0;
+                background-color: var(--color-accent);
+                min-width: 200px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1000;
+                border-radius: 0.5rem;
+                border: 1px solid var(--color-border);
+                overflow: hidden;
+            }
+            .dropdown-content.show {
+                display: block;
+            }
+            .dropdown-item {
+                padding: 0.75rem 1rem;
+                display: flex;
+                align-items: center;
+                color: var(--color-text);
+                font-size: 0.875rem;
+                transition: background-color 0.2s;
+                cursor: pointer;
+            }
+            .dropdown-item:hover {
+                background-color: var(--color-secondary);
+            }
+            .dropdown-item svg {
+                margin-right: 0.75rem;
+                width: 1rem;
+                height: 1rem;
+            }
+            .dropdown-divider {
+                height: 1px;
+                background-color: var(--color-border);
+                margin: 0.25rem 0;
+            }
+            .profile-btn {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                cursor: pointer;
+            }
+        }
+    </style>
+</head>
+<body class="bg-primary text-primary min-h-screen">
+    <!-- Header -->
+    <header class="bg-secondary border-b border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold">TechLift</h1>
+                    </div>
+                    <nav class="hidden md:block ml-10">
+                        <div class="flex items-baseline space-x-4">
+                            <a href="#" class="text-primary hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                            <a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Courses</a>
+                            <a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                            <a href="#" class="text-secondary hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Community</a>
+                        </div>
+                    </nav>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-secondary hover:text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown">
+                        <button class="profile-btn focus:outline-none">
+                            <img src="<%= profile ? '/uploads/' + profile : '/uploads/user.png' %>" alt="Profile" class="w-8 h-8 rounded-full">
+                            <span class="text-sm font-medium"><%= name %></span>
+                        </button>
+                        <div class="dropdown-content" id="profileDropdown">
+                            <div class="px-4 py-3 border-b border-primary">
+                                <p class="text-sm font-medium text-primary">Signed in as</p>
+                                <p class="text-sm text-secondary truncate"><%= email %></p>
+                            </div>
+                            <a href="#" class="dropdown-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Your Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="/logout">
+                                <button type="submit" class="w-full dropdown-item text-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    Sign out
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-secondary p-6 rounded-lg border border-primary">
+                <div class="flex items-center">
+                    <div class="p-2 bg-accent rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-secondary">Courses Enrolled</p>
+                        <p class="text-2xl font-bold text-primary">12</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-secondary p-6 rounded-lg border border-primary">
+                <div class="flex items-center">
+                    <div class="p-2 bg-accent rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success">
+                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-secondary">Learning Streak</p>
+                        <p class="text-2xl font-bold text-primary">28 days</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-secondary p-6 rounded-lg border border-primary">
+                <div class="flex items-center">
+                    <div class="p-2 bg-accent rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-warning">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-secondary">Certificates</p>
+                        <p class="text-2xl font-bold text-primary">7</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-secondary p-6 rounded-lg border border-primary">
+                <div class="flex items-center">
+                    <div class="p-2 bg-accent rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12,6 12,12 16,14"></polyline>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-secondary">Hours Learned</p>
+                        <p class="text-2xl font-bold text-primary">142h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Continue Learning -->
+            <div class="lg:col-span-2">
+                <div class="bg-secondary rounded-lg border border-primary p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-4">Continue Learning</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-accent rounded-lg border border-primary">
+                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=60&h=60&fit=crop" alt="Course" class="w-15 h-15 rounded-lg object-cover">
+                            <div class="ml-4 flex-1">
+                                <h4 class="font-medium text-primary">React Advanced Patterns</h4>
+                                <p class="text-sm text-secondary">Chapter 8: Context API Deep Dive</p>
+                                <div class="mt-2">
+                                    <div class="flex items-center justify-between text-xs text-secondary mb-1">
+                                        <span>Progress</span>
+                                        <span>68%</span>
+                                    </div>
+                                    <div class="w-full bg-primary rounded-full h-2">
+                                        <div class="bg-info h-2 rounded-full" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="ml-4 button-primary px-4 py-2 rounded-lg text-sm font-medium">Continue</button>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-accent rounded-lg border border-primary">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=60&h=60&fit=crop" alt="Course" class="w-15 h-15 rounded-lg object-cover">
+                            <div class="ml-4 flex-1">
+                                <h4 class="font-medium text-primary">Python Data Science</h4>
+                                <p class="text-sm text-secondary">Module 4: Machine Learning Basics</p>
+                                <div class="mt-2">
+                                    <div class="flex items-center justify-between text-xs text-secondary mb-1">
+                                        <span>Progress</span>
+                                        <span>45%</span>
+                                    </div>
+                                    <div class="w-full bg-primary rounded-full h-2">
+                                        <div class="bg-success h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="ml-4 button-primary px-4 py-2 rounded-lg text-sm font-medium">Continue</button>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-accent rounded-lg border border-primary">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=60&h=60&fit=crop" alt="Course" class="w-15 h-15 rounded-lg object-cover">
+                            <div class="ml-4 flex-1">
+                                <h4 class="font-medium text-primary">Node.js Backend Development</h4>
+                                <p class="text-sm text-secondary">Section 6: Database Integration</p>
+                                <div class="mt-2">
+                                    <div class="flex items-center justify-between text-xs text-secondary mb-1">
+                                        <span>Progress</span>
+                                        <span>82%</span>
+                                    </div>
+                                    <div class="w-full bg-primary rounded-full h-2">
+                                        <div class="bg-warning h-2 rounded-full" style="width: 82%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="ml-4 button-primary px-4 py-2 rounded-lg text-sm font-medium">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Upcoming Deadlines -->
+                <div class="bg-secondary rounded-lg border border-primary p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-4">Upcoming Deadlines</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-primary">React Project</p>
+                                <p class="text-xs text-secondary">Final submission</p>
+                            </div>
+                            <span class="text-xs text-warning">3 days</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-primary">Python Quiz</p>
+                                <p class="text-xs text-secondary">Chapter 4 assessment</p>
+                            </div>
+                            <span class="text-xs text-info">1 week</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-primary">Code Review</p>
+                                <p class="text-xs text-secondary">Peer evaluation</p>
+                            </div>
+                            <span class="text-xs text-success">2 weeks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Achievements -->
+                <div class="bg-secondary rounded-lg border border-primary p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-4">Recent Achievements</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-accent rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-warning">
+                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-primary">JavaScript Master</p>
+                                <p class="text-xs text-secondary">2 days ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="p-2 bg-accent rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-primary">30-Day Streak</p>
+                                <p class="text-xs text-secondary">1 week ago</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="p-2 bg-accent rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-primary">Code Contributor</p>
+                                <p class="text-xs text-secondary">2 weeks ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        // Toggle dropdown on profile button click
+        document.querySelector('.profile-btn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            const dropdown = document.getElementById('profileDropdown');
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        document.getElementById('profileDropdown').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Add click handler for logout to prevent default form submission
+        document.getElementById('logoutForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const dropdown = document.getElementById('profileDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>

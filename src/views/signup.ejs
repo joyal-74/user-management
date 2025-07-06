@@ -1,0 +1,315 @@
+<head>
+    <title>Dark Theme Signup</title>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-primary: #0d0d0d; /* Perfect black */
+                --color-secondary: #121212; /* Dark gray */
+                --color-accent: #1e1e1e; /* Slightly lighter gray */
+                --color-text: #e0e0e0; /* Light gray text */
+                --color-text-secondary: #a0a0a0; /* Secondary text */
+                --color-border: #2a2a2a; /* Border color */
+                --color-button: #3a3a3a; /* Button color */
+                --color-button-hover: #4a4a4a; /* Button hover */
+                --color-success: #10b981; /* Success green */
+                --color-error: #ef4444; /* Error red */
+            }
+        }
+
+        @layer components {
+            .bg-primary {
+                background-color: var(--color-primary);
+            }
+            .bg-secondary {
+                background-color: var(--color-secondary);
+            }
+            .bg-accent {
+                background-color: var(--color-accent);
+            }
+            .text-primary {
+                color: var(--color-text);
+            }
+            .text-secondary {
+                color: var(--color-text-secondary);
+            }
+            .border-primary {
+                border-color: var(--color-border);
+            }
+            .button-primary {
+                background-color: var(--color-button);
+                color: var(--color-text);
+            }
+            .button-primary:hover {
+                background-color: var(--color-button-hover);
+            }
+            
+            /* Toast styles */
+            .toast {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 6px;
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                transform: translateX(200%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .toast.show {
+                transform: translateX(0);
+            }
+            .toast.success {
+                background-color: var(--color-success);
+            }
+            .toast.error {
+                background-color: var(--color-error);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-primary text-primary min-h-screen flex items-center justify-center p-4">
+    <!-- Toast container -->
+    <div id="toastContainer"></div>
+    
+    <div class="w-full max-w-6xl rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+        <!-- Left Side - Image and Company Details -->
+        <div class="bg-accent p-8 md:p-12 md:w-1/2 flex flex-col items-center justify-center">
+            <div class="mb-8">
+                <img src="/logo-light.png" alt="Company Logo" class="w-32 h-32 rounded-full object-cover mx-auto">
+            </div>
+            <h1 class="text-3xl font-bold text-center mb-4">TechLift</h1>
+            <p class="text-secondary text-center max-w-md">
+                From Fundamentals to Mastery, TechLift is Your Launchpad to Becoming a Future-Ready Developer.
+            </p>
+            <div class="mt-8 flex space-x-4">
+                <a href="#" class="text-secondary hover:text-primary transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-facebook">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-secondary hover:text-primary transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-twitter">
+                        <path
+                            d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="#" class="text-secondary hover:text-primary transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-linkedin">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Side - Signup Form -->
+        <div class="bg-secondary p-6 md:p-8 md:w-1/2">
+            <h2 class="text-2xl font-bold mb-4 text-center">Create Account</h2>
+
+            <form id="signupForm" class="space-y-4">
+                <!-- Photo Upload Section -->
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <div id="photoPreview"
+                            class="w-20 h-20 rounded-full bg-accent border-2 border-dashed border-primary flex items-center justify-center cursor-pointer hover:border-gray-500 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-secondary">
+                                <path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                </path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </div>
+                        <input type="file" id="photo" name="photo" accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <div
+                            class="absolute -bottom-1 -right-1 w-6 h-6 bg-accent rounded-full border border-primary flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-secondary">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Name and Phone in same row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input type="text" id="fullName" name="name"
+                            class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                            placeholder="Full Name"
+                            pattern="[A-Za-z]+(?:[ '\-][A-Za-z]+)*"
+                            required >
+                    </div>
+                    <div>
+                        <input type="number" id="age" name="age"
+                            class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                            placeholder="Age" required
+                            pattern="[0-9]{10}" title="Please enter your age">
+                    </div>
+                </div>
+
+                <input type="email" id="email" name="email"
+                    class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                    placeholder="Email Address" required>
+   
+                <input type="tel" id="phone" name="phone"
+                    class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                    placeholder="Phone Number" required
+                    pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number">
+                   
+                <input type="password" id="password" name="password"
+                    class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                    placeholder="Password (min 8 characters)" required minlength="8">
+
+                <input type="password" id="confirmPassword" name="confirmPassword"
+                    class="w-full px-3 py-2.5 rounded-lg bg-accent border border-primary focus:outline-none focus:ring-2 focus:ring-gray-500 transition text-sm"
+                    placeholder="Confirm Password" required>
+
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="terms" name="terms" type="checkbox" required
+                            class="w-4 h-4 border border-primary rounded bg-accent focus:ring-2 focus:ring-gray-500">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="text-secondary">
+                            I agree to the
+                            <a href="#" class="font-medium text-primary hover:text-white transition">Terms of Service</a>
+                            and
+                            <a href="#" class="font-medium text-primary hover:text-white transition">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn"
+                    class="w-full button-primary py-2.5 px-4 rounded-lg font-medium transition text-sm flex items-center justify-center">
+                    <span id="btnText">Create Account</span>
+                    <svg id="spinner" class="hidden w-5 h-5 ml-2 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-secondary text-sm">
+                    Already have an account?
+                    <a href="/login" class="font-medium text-primary hover:text-white transition">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 5000);
+        }
+
+        document.getElementById('photo').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('photoPreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Profile" class="w-full h-full rounded-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+            
+            submitBtn.disabled = true;
+            btnText.textContent = 'Creating Account...';
+            spinner.classList.remove('hidden');
+            
+            const formData = new FormData(this);
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            const terms = formData.get('terms');
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match!', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+                spinner.classList.add('hidden');
+                return;
+            }
+
+            if (password.length < 8) {
+                showToast('Password must be at least 8 characters long!', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+                spinner.classList.add('hidden');
+                return;
+            }
+
+            if (!terms) {
+                showToast('Please accept the Terms of Service and Privacy Policy!', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+                spinner.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('Account created successfully!');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    showToast(data.message || 'Signup failed. Please try again.', 'error');
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Create Account';
+                    spinner.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Network error. Please try again.', 'error');
+                submitBtn.disabled = false;
+                btnText.textContent = 'Create Account';
+                spinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>

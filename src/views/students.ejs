@@ -1,0 +1,527 @@
+<head>
+    <title>Admin Dashboard</title>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-primary: #0d0d0d;
+                --color-secondary: #121212;
+                --color-accent: #1e1e1e;
+                --color-text: #e0e0e0;
+                --color-text-secondary: #a0a0a0;
+                --color-border: #2a2a2a;
+                --color-button: #3a3a3a;
+                --color-button-hover: #4a4a4a;
+                --color-card: #1a1a1a;
+                --color-success: #10b981;
+                --color-warning: #f59e0b;
+                --color-danger: #ef4444;
+            }
+        }
+
+        @layer components {
+            .bg-primary { background-color: var(--color-primary); }
+            .bg-secondary { background-color: var(--color-secondary); }
+            .bg-accent { background-color: var(--color-accent); }
+            .bg-card { background-color: var(--color-card); }
+            .text-primary { color: var(--color-text); }
+            .text-secondary { color: var(--color-text-secondary); }
+            .border-primary { border-color: var(--color-border); }
+            .button-primary {
+                background-color: var(--color-button);
+                color: var(--color-text);
+            }
+            .btn-danger {
+                background-color: var(--color-danger);
+                color: white;
+                transition: all 0.3s ease;
+            }
+            .btn-danger:hover {
+                background-color: #dc2626;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+            .btn-danger:active {
+                transform: translateY(0);
+            }
+            .button-primary:hover { background-color: var(--color-button-hover); }
+            .text-success { color: var(--color-success); }
+            .text-warning { color: var(--color-warning); }
+            .text-danger { color: var(--color-danger); }
+            
+            /* Status badges */
+            .status-active {
+                @apply bg-green-900 bg-opacity-30 text-green-400;
+            }
+            .status-inactive {
+                @apply bg-yellow-900 bg-opacity-30 text-yellow-400;
+            }
+            .status-blocked {
+                @apply bg-red-900 bg-opacity-30 text-red-400;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-primary text-primary min-h-screen">
+    <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
+    <!-- Navigation -->
+    <nav class="bg-secondary border-b border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <span class="text-xl font-bold">AdminPanel</span>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#"
+                                class="px-3 py-2 rounded-md text-sm font-medium bg-accent text-white">Dashboard</a>
+                            <a href="#"
+                                class="px-3 py-2 rounded-md text-sm font-medium text-secondary hover:text-white hover:bg-accent">Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button class="p-1 rounded-full text-secondary hover:text-white focus:outline-none">
+                            <span class="sr-only">View notifications</span>
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <div class="ml-3 relative">
+                            <div class="dropdown">
+                                <button id="profileDropdownBtn" class="max-w-xs flex items-center text-sm rounded-full focus:outline-none">
+                                    <span class="sr-only">Open user menu</span>
+                                    <img class="h-8 w-8 rounded-full"
+                                        src="/uploads/software-engineer.png"
+                                        alt="">
+                                </button>
+                                <div id="profileDropdownMenu"
+                                    class="dropdown-menu hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-accent border border-primary z-10">
+                                    <div class="py-1">
+                                        <a href="/logout"
+                                            class="block px-4 py-2 text-sm text-secondary hover:bg-secondary hover:text-white">Sign out</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-bold">Student Management</h1>
+                <p class="text-secondary mt-2">Manage all registered students in the institution</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <a href="/create">
+                    <button class="button-primary px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        New User
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <!-- User Table -->
+        <div class="bg-card rounded-lg border border-primary overflow-hidden">
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-primary">
+                    <thead class="bg-accent">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                                User</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                                Age</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                                Email</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                                Phone No</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-center text-xs font-medium text-secondary uppercase tracking-wider">
+                                Status</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-medium text-secondary uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-primary">
+                        <% if (students.length === 0) { %>
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center">
+                                    <div class="empty-state text-center">
+                                        <svg class="mx-auto h-12 w-12 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <h3 class="mt-2 text-lg font-medium text-primary">No Students Found</h3>
+                                        <p class="mt-1 text-secondary">Get started by adding your first student to the system.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } else { %>
+                            <% students.forEach(student => { %>
+                                <tr>
+                                    <input type="hidden" class="student-id" value="<%= student.id %>">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 overflow-hidden rounded-full">
+                                                <img src="<%= student.profile ? '/uploads/' + student.profile : '/uploads/user.png' %>" 
+                                                    class="h-full w-full object-cover" 
+                                                    alt="<%= student.name %>'s profile" 
+                                                    onerror="this.src='/uploads/user.png'" />
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium">
+                                                    <%= student.name %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm">
+                                            <%= student.age %>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm">
+                                            <%= student.email %>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <%= student.phone %>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="px-2 py-1 rounded text-xs font-medium
+                                        <%= student.status === 'Active' ? 'status-active' : 'status-blocked' %>">
+                                            <%= student.status %>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="py-1">
+                                            <a href="/edit/<%= student.id %>"
+                                                class="inline-flex px-1 py-2 text-sm text-secondary hover:bg-secondary hover:text-white">
+                                                <i class="fas fa-edit mr-1"></i>
+                                            </a>
+                                            <button class="block-btn inline-flex px-1 py-2 text-sm <%= student.status === 'Active' ? 'text-warning' : 'text-success' %> hover:bg-secondary hover:text-white"
+                                                data-id="<%= student.id %>" data-status="<%= student.status %>">
+                                                <i class="fas <%= student.status === 'Active' ? 'fa-ban' : 'fa-check-circle' %> mr-1"></i>
+                                            </button>
+                                            <button class="delete-btn inline-flex px-1 py-2 text-sm text-danger hover:bg-secondary hover:text-white"
+                                                data-id="<%= student.id %>">
+                                                <i class="fas fa-trash mr-1"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- Delete Confirmation Modal -->
+            <div id="deleteModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+                <div class="bg-card rounded-xl p-6 max-w-md w-full mx-4">
+                    <div class="text-center">
+                        <svg class="mx-auto h-12 w-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h3 class="text-lg font-bold mt-4">Delete Student</h3>
+                        <p class="text-secondary mt-2">Are you sure you want to delete this student? This action cannot be undone.</p>
+                        
+                        <div class="flex justify-center space-x-4 mt-6">
+                            <button id="cancelDelete" class="px-4 py-2 bg-accent hover:bg-button rounded-lg transition">
+                                Cancel
+                            </button>
+                            <button id="confirmDelete" class="px-4 py-2 btn-danger rounded-lg transition">
+                                Delete Student
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Block/Unblock Confirmation Modal -->
+            <div id="blockModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+                <div class="bg-card rounded-xl p-6 max-w-md w-full mx-4">
+                    <div class="text-center">
+                        <svg class="mx-auto h-12 w-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h3 class="text-lg font-bold mt-4" id="blockModalTitle">Block Student</h3>
+                        <p class="text-secondary mt-2" id="blockModalMessage">Are you sure you want to block this student?</p>
+                        
+                        <div class="flex justify-center space-x-4 mt-6">
+                            <button id="cancelBlock" class="px-4 py-2 bg-accent hover:bg-button rounded-lg transition">
+                                Cancel
+                            </button>
+                            <button id="confirmBlock" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition">
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-primary flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-sm text-secondary">
+                        Showing <span class="font-medium">
+                            <%= from %>
+                        </span> to <span class="font-medium">
+                            <%= to %>
+                        </span> of
+                        <span class="font-medium">
+                            <%= totalStudents %>
+                        </span> students
+                    </p>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <!-- Previous button -->
+                    <a href="?page=<%= currentPage - 1 %>"
+                        class="button-primary px-3 py-1 rounded-md text-sm font-medium <%= currentPage === 1 ? 'pointer-events-none opacity-50' : '' %>">
+                        Previous
+                    </a>
+
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <% if (i===currentPage) { %>
+                            <span class="button-primary px-3 py-1 rounded-md text-sm font-medium">
+                                <%= i %>
+                            </span>
+                        <% } else if (i <=3 || i> totalPages - 2 || (i >= currentPage - 1 && i <= currentPage + 1)) { %>
+                                <a href="?page=<%= i %>"
+                                    class="bg-accent px-3 py-1 rounded-md text-sm font-medium hover:bg-secondary">
+                                    <%= i %>
+                                </a>
+                                <% } else if (i===currentPage - 2 || i===currentPage + 2) { %>
+                                    <span class="px-3 py-1 text-sm">...</span>
+                                <% } %>
+                        <% } %>
+
+                        <!-- Next button -->
+                        <a href="?page=<%= currentPage + 1 %>"
+                            class="button-primary px-3 py-1 rounded-md text-sm font-medium <%= currentPage === totalPages ? 'pointer-events-none opacity-50' : '' %>">
+                            Next
+                        </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const profileDropdownBtn = document.getElementById('profileDropdownBtn');
+        const profileDropdownMenu = document.getElementById('profileDropdownMenu');
+
+        profileDropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdownMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!profileDropdownBtn.contains(e.target) && !profileDropdownMenu.contains(e.target)) {
+                profileDropdownMenu.classList.add('hidden');
+            }
+        });
+
+
+        // Block functionality
+        const blockModal = document.getElementById('blockModal');
+        const blockModalTitle = document.getElementById('blockModalTitle');
+        const blockModalMessage = document.getElementById('blockModalMessage');
+        const cancelBlock = document.getElementById('cancelBlock');
+        const confirmBlock = document.getElementById('confirmBlock');
+        let currentBlockStudentId = null;
+        let currentBlockStatus = null;
+
+        // Event delegation for block buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.block-btn')) {
+                currentBlockStudentId = e.target.closest('.block-btn').dataset.id;
+                currentBlockStatus = e.target.closest('.block-btn').dataset.status;
+                
+                // Update modal text based on current status
+                if (currentBlockStatus === 'Active') {
+                    blockModalTitle.textContent = 'Block Student';
+                    blockModalMessage.textContent = 'Are you sure you want to block this student?';
+                    confirmBlock.textContent = 'Block Student';
+                    confirmBlock.className = 'px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition';
+                } else {
+                    blockModalTitle.textContent = 'Unblock Student';
+                    blockModalMessage.textContent = 'Are you sure you want to unblock this student?';
+                    confirmBlock.textContent = 'Unblock Student';
+                    confirmBlock.className = 'px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition';
+                }
+                
+                blockModal.classList.remove('hidden');
+            }
+        });
+
+        cancelBlock.addEventListener('click', () => {
+            blockModal.classList.add('hidden');
+        });
+
+        confirmBlock.addEventListener('click', async () => {
+            if (!currentBlockStudentId || !currentBlockStatus) return;
+            
+            blockModal.classList.add('hidden');
+            
+            try {
+                const response = await fetch(`/block/${currentBlockStudentId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: currentBlockStatus === 'Active' ? 'Blocked' : 'Active'
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const updatedStudent = result.student;
+                    
+                    updateStudentRow(updatedStudent);
+                    
+                    const action = currentBlockStatus === 'Active' ? 'blocked' : 'unblocked';
+                    showToast(`Student ${action} successfully`, 'success');
+                } else {
+                    const result = await response.json();
+                    showToast(result.message || 'Failed to update status', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Network error. Please try again.', 'error');
+            }
+        });
+
+        function updateStudentRow(student) {
+            const row = document.querySelector(`.block-btn[data-id="${student.id}"]`)?.closest('tr');
+            if (!row) return;
+            
+            const statusBadge = row.querySelector('.status-active, .status-blocked');
+            if (statusBadge) {
+                statusBadge.className = student.status === 'Active' ? 
+                    'px-2 py-1 rounded text-xs font-medium status-active' : 
+                    'px-2 py-1 rounded text-xs font-medium status-blocked';
+                statusBadge.textContent = student.status;
+            }
+            
+            const blockBtn = row.querySelector('.block-btn');
+            if (blockBtn) {
+                blockBtn.dataset.status = student.status;
+                blockBtn.className = student.status === 'Active' ? 
+                    'block-btn inline-flex px-1 py-2 text-sm text-warning hover:bg-secondary hover:text-white' : 
+                    'block-btn inline-flex px-1 py-2 text-sm text-success hover:bg-secondary hover:text-white';
+                
+                const icon = blockBtn.querySelector('i');
+                if (icon) {
+                    icon.className = student.status === 'Active' ? 
+                        'fas fa-ban mr-1' : 
+                        'fas fa-check-circle mr-1';
+                }
+            }
+        }
+
+        // delete button
+        const deleteModal = document.getElementById('deleteModal');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDelete = document.getElementById('confirmDelete');
+        let currentStudentId = null;
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-btn')) {
+                currentStudentId = e.target.closest('.delete-btn').dataset.id;
+                deleteModal.classList.remove('hidden');
+            }
+        });
+
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+        });
+
+        confirmDelete.addEventListener('click', async () => {
+            if (!currentStudentId) return;
+            
+            deleteModal.classList.add('hidden');
+            
+            try {
+                const response = await fetch(`/${currentStudentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showToast('Student deleted successfully', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const result = await response.json();
+                    showToast(result.message || 'Failed to delete student', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Network error. Please try again.', 'error');
+            }
+        });
+
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container');
+            const toastId = 'toast-' + Date.now();
+            
+            const toastConfig = {
+                success: { bg: 'bg-green-600', icon: '✓' },
+                error: { bg: 'bg-red-600', icon: '✗' },
+                warning: { bg: 'bg-yellow-600', icon: '⚠' },
+                info: { bg: 'bg-blue-600', icon: 'ℹ' }
+            };
+            
+            const config = toastConfig[type] || toastConfig.info;
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `${config.bg} text-white px-4 py-3 rounded-lg shadow-lg transform translate-x-full transition-all duration-300 ease-out flex items-center space-x-2 min-w-72`;
+            
+            toast.innerHTML = `
+                <span class="font-bold text-lg">${config.icon}</span>
+                <span class="flex-1">${message}</span>
+                <button onclick="removeToast('${toastId}')" class="text-white/80 hover:text-white text-lg font-bold">×</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+                toast.classList.add('translate-x-0');
+            }, 100);
+  
+            setTimeout(() => {
+                removeToast(toastId);
+            }, 1000);
+        }
+        
+        function removeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+    </script>
+</body>
