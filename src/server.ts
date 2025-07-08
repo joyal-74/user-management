@@ -3,6 +3,7 @@ import studentRoutes from './routes/student.routes';
 import path from 'path';
 import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
+import { connectDB } from './utils/connect';
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.set('layout', path.join(__dirname, 'views/layout/layout.ejs'));
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, '../assets/uploads')));
 
+connectDB();
 
 app.use(
     session({

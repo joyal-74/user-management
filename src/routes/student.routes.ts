@@ -1,12 +1,12 @@
 import express from 'express';
 import { StudentController } from '../controllers/student.controller';
 import { StudentService } from '../services/student.services';
-import { StudentModel } from '../models/student.model';
+import { getStudentModel } from '../utils/studentModelFactory';
 import { isAdmin, isStudent, isAlreadyLoggedIn } from '../middlewares/auth';
 import upload from '../middlewares/upload';
 
 
-const studentModel = new StudentModel();
+const studentModel = getStudentModel();
 const studentService = new StudentService(studentModel);
 const studentController = new StudentController(studentService);
 

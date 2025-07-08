@@ -1,10 +1,10 @@
-import { StudentModel } from '../models/student.model';
+import { IStudentModel } from '../interfaces/IStudentModel';
 import { CreateStudentDTO, UpdateStudentDTO } from '../types/student.dto';
 import bcrypt from 'bcryptjs';
-import { Status } from '../models/student.model';
+import { Status } from '../types/student.interface';
 
 export class StudentService {
-    constructor(private studentModel: StudentModel) { }
+    constructor(private studentModel: IStudentModel) {}
 
     async registerStudent(data: CreateStudentDTO) {
         data.password = await bcrypt.hash(data.password, 10);

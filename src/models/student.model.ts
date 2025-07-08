@@ -1,29 +1,14 @@
 import db from '../utils/db';
+import { Student, Status } from '../types/student.interface';
+import { IStudentModel } from '../interfaces/IStudentModel';
 
-export enum Status {
-    Active = 'Active',
-    Blocked = 'Blocked',
-}
-
-export interface Student {
-    id: number;
-    name: string;
-    age: number;
-    email: string;
-    phone: string;
-    status: Status;
-    profile: string;
-    password : string;
-    role : string;
-}
-
-export class StudentModel {
+export class SQLStudentModel implements IStudentModel {
     async findAll(): Promise<Student[]> {
         const result = await db.query("SELECT * FROM students WHERE role='student' ORDER BY id DESC");
         return result.rows;
     }
 
-    async findById(id: number): Promise<Student | null> {
+    async findById(id: string | number): Promise<Student | null> {
         const result = await db.query('SELECT * FROM students WHERE id = $1', [id]);
         return result.rows[0] || null;
     }
@@ -42,8 +27,8 @@ export class StudentModel {
         return result.rows[0];
     }
 
-    async updateStatus(id : number, student : Partial<Omit<Student, 'id'>>): Promise<Student | null> {
-        const status = student.status
+    async updateStatus(id: string | number, student: Partial<Omit<Student, 'id'>>): Promise<Student | null> {
+        const status = student.status;
         const result = await db.query(
             'UPDATE students SET status = $1 WHERE id = $2 RETURNING *',
             [status, id]
@@ -51,7 +36,7 @@ export class StudentModel {
         return result.rows[0];
     }
 
-    async update(id: number, student: Partial<Omit<Student, 'id'>>): Promise<Student | null> {
+    async update(id: string | number, student: Partial<Omit<Student, 'id'>>): Promise<Student | null> {
         const existing = await this.findById(id);
         if (!existing) return null;
 
@@ -69,8 +54,7 @@ export class StudentModel {
         return result.rows[0];
     }
 
-
-    async delete(id: number): Promise<boolean> {
+    async delete(id: string | number): Promise<boolean> {
         const result = await db.query('DELETE FROM students WHERE id = $1', [id]);
         return (result.rowCount ?? 0) > 0;
     }
